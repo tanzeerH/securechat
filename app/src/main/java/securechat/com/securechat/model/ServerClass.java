@@ -53,4 +53,11 @@ public class ServerClass {
     public static void setDataOutputStream(DataOutputStream dataOutputStream) {
         ServerClass.dataOutputStream = dataOutputStream;
     }
+    public static void makeNull()
+    {
+        serverSocket=null;
+        socket = null;
+        dataInputStream = null;
+        dataOutputStream =  null;
+    }
 }

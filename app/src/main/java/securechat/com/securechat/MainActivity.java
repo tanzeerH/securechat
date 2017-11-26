@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import securechat.com.securechat.adapter.DeviceListAdapter;
@@ -121,12 +122,12 @@ public class MainActivity extends AppCompatActivity implements WifiP2pManager.Co
         Toast.makeText(MainActivity.this," in "+ info.groupOwnerAddress +"  "+ info.isGroupOwner +"  ", Toast.LENGTH_SHORT).show();
         if (info.groupFormed && info.isGroupOwner) {
 
-                new AsyncServer().execute();
+                new AsyncServer(MainActivity.this).execute();
 
         }
         else if( info.groupFormed)
         {
-            final Handler handler = new Handler();
+           /* final Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -134,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements WifiP2pManager.Co
                    // Intent intent=new Intent(MainActivity.this,ChatActivity.class);
                    // startActivity(intent);
                 }
-            }, 3000);
+            }, 3000);*/
         }
     }
     private void initKeysForEncryption()
@@ -156,4 +157,19 @@ public class MainActivity extends AppCompatActivity implements WifiP2pManager.Co
         RSA.testEncryption(MainActivity.this);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(ClientClass.getDataOutputStream() != null)
+        {
+            try {
+                ServerClass.getSocket().close();
+                ServerClass.makeNull();
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
 }

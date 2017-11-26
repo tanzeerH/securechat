@@ -1,6 +1,7 @@
 package securechat.com.securechat.crypto;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,6 +43,8 @@ public class RSA {
    * String to hold name of the public key file.
    */
   public static final String PUBLIC_KEY_FILE =Constants.FILE_EXTENSION_PATH+ "public.key";
+
+    public static final String OTHER_KEY_FILE =Constants.FILE_EXTENSION_PATH+ "other.key";
 
   /**
    * Generate key which contains a pair of private and public key using 1024
@@ -301,4 +304,36 @@ public class RSA {
 
 */
   }
+  public static byte[] encryptUsingOthersPublicKey(Context context,String message)
+  {
+      try {
+          ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(new File(context.getFilesDir(), OTHER_KEY_FILE)));
+          final PublicKey publicKey = (PublicKey) inputStream.readObject();
+          final byte[] cipherText = encrypt(message, publicKey);
+
+          Log.e(" cypher"," "+cipherText.toString());
+          return  cipherText;
+      }
+      catch(Exception e)
+      {
+          e.printStackTrace();
+      }
+      return  null;
+  }
+    public static String encryptUsingMyPrivateKey(Context context,byte[] message)
+    {
+        try {
+         ObjectInputStream   InputStream = new ObjectInputStream(new FileInputStream(new File(context.getFilesDir(),PRIVATE_KEY_FILE)));
+            final PrivateKey privateKey = (PrivateKey) InputStream.readObject();
+            final String plainText = decrypt(message, privateKey);
+
+            Log.e(" cypher"," "+plainText);
+            return  plainText;
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return  null;
+    }
 }

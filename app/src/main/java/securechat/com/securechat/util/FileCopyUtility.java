@@ -18,12 +18,13 @@ public class FileCopyUtility {
         int len;
         long startTime=System.currentTimeMillis();
 
+        Log.e("TAG"," receving file");
         try {
             while ((len = inputStream.read(buf)) != -1) {
                 out.write(buf, 0, len);
             }
-            out.close();
-            inputStream.close();
+           // out.close();
+           // inputStream.close();
             long endTime=System.currentTimeMillis()-startTime;
             Log.v("","Time taken to transfer all bytes is : "+endTime);
 

@@ -21,6 +21,7 @@ import android.widget.TextView;
 import java.io.IOException;
 
 import securechat.com.securechat.adapter.MessageCursorAdapter;
+import securechat.com.securechat.crypto.RSA;
 import securechat.com.securechat.database.DataHelper;
 import securechat.com.securechat.model.ClientClass;
 import securechat.com.securechat.model.Message;
@@ -102,7 +103,7 @@ public class ChatActivity extends AppCompatActivity {
                 //new AsyncServer().execute();
 
             } else {
-                new AsyncClient("").execute();
+                new AsyncClient(ChatActivity.this).execute();
             }
         }
     }
@@ -112,13 +113,15 @@ public class ChatActivity extends AppCompatActivity {
         {
             Message message = new Message(myText, System.currentTimeMillis(),Message.FLAG_SEND_MESSAGE, CommonUtil.getDeviceName());
             //temp. will remove
-            dataHelper.insertMessage(message);
+          //  dataHelper.insertMessage(message);
             if(Constants.wifiP2pInfo != null)
             {
                 if (Constants.wifiP2pInfo.groupFormed && Constants.wifiP2pInfo.isGroupOwner) {
                     Log.e("message", "  insert: server");
                     try {
-                        ServerClass.getDataOutputStream().writeUTF(myText);
+                        byte [] data=RSA.encryptUsingOthersPublicKey(ChatActivity.this,myText);
+                        ServerClass.getDataOutputStream().writeInt(data.length);
+                        ServerClass.getDataOutputStream().write(data);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -126,7 +129,10 @@ public class ChatActivity extends AppCompatActivity {
                 else {
                     Log.e("message", "  insert: client");
                     try {
-                        ClientClass.getDataOutputStream().writeUTF(myText);
+                        byte [] data=RSA.encryptUsingOthersPublicKey(ChatActivity.this,myText);
+                        ClientClass.getDataOutputStream().writeInt(data.length);
+                        ClientClass.getDataOutputStream().write(data);
+                      //  ClientClass.getDataOutputStream().writeUTF(RSA.encryptUsingOthersPublicKey(ChatActivity.this,myText));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

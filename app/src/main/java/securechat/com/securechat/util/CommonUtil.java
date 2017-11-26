@@ -6,8 +6,10 @@ import android.os.Build;
 import android.util.Log;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
@@ -75,7 +77,7 @@ public class CommonUtil {
 
         return out;
     }
-    private static OutputStream getOutputStreamtoWrite(Context context, String extenstion)
+    public static OutputStream getOutputStreamtoWrite(Context context, String extenstion)
     {
         //String root = Environment.getExternalStorageDirectory().toString();
         File myDir = new File(context.getFilesDir(), Constants.FILE_EXTENSION_PATH);
@@ -93,5 +95,29 @@ public class CommonUtil {
         }
 
         return out;
+    }
+    public static InputStream getInputStreamForFile(Context context, String filename)
+    {
+        //String root = Environment.getExternalStorageDirectory().toString();
+        File file = new File(context.getFilesDir(), Constants.FILE_EXTENSION_PATH+filename);
+
+        if(file.exists())
+        {
+            Log.e("size"," "+ file.length());
+        }
+        else
+        {
+            Log.e("size"," not exists");
+        }
+        FileInputStream inputStream=null;
+        try {
+            inputStream= new FileInputStream(file);
+        }
+        catch(FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+
+        return inputStream;
     }
 }

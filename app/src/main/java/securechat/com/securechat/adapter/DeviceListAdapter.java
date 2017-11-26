@@ -90,12 +90,12 @@ public class DeviceListAdapter extends BaseAdapter {
 			@Override
 			public void onClick(View v) {
 
-				/*WifiP2pConfig config = new WifiP2pConfig();
+				WifiP2pConfig config = new WifiP2pConfig();
 				config.deviceAddress = wifiP2pDevice.deviceAddress;
 				config.wps.setup = WpsInfo.PBC;
-				connect(config);*/
-				Intent intent=new Intent(mContext,ChatActivity.class);
-				mContext.startActivity(intent);
+				connect(config);
+				//Intent intent=new Intent(mContext,ChatActivity.class);
+				//mContext.startActivity(intent);
 			}
 		});
 		holder.tv_chat.setOnClickListener(new View.OnClickListener() {
@@ -129,7 +129,7 @@ public class DeviceListAdapter extends BaseAdapter {
 			public void onSuccess() {
 				// WiFiDirectBroadcastReceiver will notify us. Ignore for now.
 				String address= config.deviceAddress;
-				Toast.makeText(mContext, "Connect successfull. Retry.",
+				Toast.makeText(mContext, "Connect successfull.",
 						Toast.LENGTH_SHORT).show();
 			}
 

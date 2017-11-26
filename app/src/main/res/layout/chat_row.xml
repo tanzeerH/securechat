@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <ImageView
             android:id="@+id/iv_sender"
@@ -24,7 +24,10 @@
 
             <TextView
                 android:id="@+id/tv_message_received"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
+                android:textColor="@android:color/black"
+                android:layout_marginTop="5dp"
+                android:text="Hello"
                 android:background="@drawable/incoming_bubble_bg"
                 android:layout_height="wrap_content" />
         </RelativeLayout>
@@ -34,6 +37,7 @@
         android:id="@+id/rl_send_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="visible"
         android:layout_margin="10dp">
 
         <ImageView
@@ -52,10 +56,11 @@
             <TextView
                 android:id="@+id/tv_message_send"
                 android:layout_width="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:text="Hello"
                 android:background="@drawable/outgoing_bubble_bg"
-                android:layout_alignParentRight="true"
+
                 android:layout_height="wrap_content" />
         </RelativeLayout>
     </RelativeLayout>
