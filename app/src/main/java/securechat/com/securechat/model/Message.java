@@ -17,8 +17,8 @@ public class Message {
         return message_id;
     }
 
-    public Message(int message_id, String message, long date, int type, String sender) {
-        this.message_id = message_id;
+    public Message( String message, long date, int type, String sender) {
+
         this.message = message;
         this.date = date;
         this.type = type;
@@ -61,4 +61,5 @@ public class Message {
     public void setMessage_id(int message_id) {
         this.message_id = message_id;
     }
+
 }

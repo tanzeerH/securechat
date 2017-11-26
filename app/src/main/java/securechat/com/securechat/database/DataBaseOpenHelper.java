@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DataBaseOpenHelper extends SQLiteOpenHelper {
 
     public static String MESSAGE_TABLE_NAME="messages";
-    public static String KEY_MESSAGE_ID="message_id";
+    public static String KEY_MESSAGE_ID="_id";
     public static String KEY_TYPE ="type";
     public static String KEY_MESSAGE_BODY="message_body";
     public static String KEY_SENDER ="sender";

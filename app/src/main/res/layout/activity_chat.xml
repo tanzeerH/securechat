@@ -4,28 +4,29 @@
     android:layout_width="match_parent"
     android:background="@drawable/background"
     android:layout_height="match_parent">
-    <RelativeLayout
-        android:id="@+id/rl_bottom_bar"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_alignParentBottom="true">
+
         <ImageButton
             android:id="@+id/iv_send"
             android:layout_width="50dp"
-            android:layout_height="match_parent"
+            android:layout_height="50dp"
+            android:clickable="true"
+            android:layout_alignParentBottom="true"
             android:background="@drawable/btn_send_active_128"
             android:layout_alignParentRight="true"/>
         <EditText
+            android:id="@+id/et_text"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            android:maxLines="6"
+            android:layout_alignParentBottom="true"
             android:layout_toLeftOf="@+id/iv_send"/>
-    </RelativeLayout>
+
     <ListView
+        android:id="@+id/lv_message"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/rl_bottom_bar"></ListView>
+        android:stackFromBottom="true"
+        android:layout_above="@+id/et_text"></ListView>
 
 </RelativeLayout>

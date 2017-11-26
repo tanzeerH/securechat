@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+         android:padding="8dp"
+        android:layout_centerHorizontal="true"
+        >
+        <ImageView
+            android:id="@+id/iv_flag"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="5dp"
+            android:paddingTop="10dp"
+            android:paddingRight="12dp"
+            android:src="@drawable/wifi_icon"
+            android:layout_marginRight="5dp"
+            android:paddingBottom="5dp"/>
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:textColor="@android:color/holo_red_dark"
+            android:textStyle="bold"
+            android:layout_below="@id/iv_flag"
+            android:text="Connected"
+            android:textSize="12sp"
+
+            />
+        <TextView
+            android:id="@+id/tv_device"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="5dp"
+            android:layout_toRightOf="@id/iv_flag"
+            android:layout_marginTop="10dp"
+            android:text="Galaxy A7"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+           />
+        <TextView
+            android:id="@+id/tv_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="15dp"
+            android:layout_toRightOf="@+id/iv_flag"
+            android:layout_below="@id/tv_device"
+            android:textColor="@android:color/black"
+            android:visibility="gone"
+            android:text="Tap To Chat"
+            android:textSize="20sp"
+
+            />
+        <TextView
+            android:id="@+id/tv_connect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="15dp"
+            android:layout_toRightOf="@+id/iv_flag"
+            android:layout_below="@id/tv_device"
+            android:textColor="@android:color/black"
+            android:text="Tap To Connect"
+            android:textSize="20sp"
+
+            />
+    </RelativeLayout>
+
+</RelativeLayout>
