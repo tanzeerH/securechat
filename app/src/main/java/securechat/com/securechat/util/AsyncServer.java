@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -95,7 +97,11 @@ public class AsyncServer extends AsyncTask<Void, Void, Void> {
                         dataInputStream.read(data, 0, len);
                         //Log.e("message","read raw" +val);
                         String val = RSA.encryptUsingMyPrivateKey(mContext, data);
-                        Log.e("message", "read" + val);
+                        JSONObject jsonObject=new JSONObject(val);
+                        val=CommonUtil.getMessageFromJSON(jsonObject);
+                        String hash=CommonUtil.getHashFromJSON(jsonObject);
+                        hash=RSA.decryptUsingOthersPublicKey(mContext,hash);
+                        Log.e("message", "read" + val +" hash: "+ hash);
                         Message message = new Message(val, System.currentTimeMillis(), Message.FLAG_RECEIVED_MESSAGE, CommonUtil.getDeviceName());
                         DataHelper.getInstance(mContext).insertMessage(message);
                     }
@@ -110,6 +116,7 @@ public class AsyncServer extends AsyncTask<Void, Void, Void> {
         }
         return null;
     }
+
     private void saveKeyToFile(byte[] bytes)
     {
         try {

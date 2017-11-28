@@ -5,6 +5,8 @@ import android.net.wifi.p2p.WifiP2pDevice;
 import android.os.Build;
 import android.util.Log;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -119,5 +121,41 @@ public class CommonUtil {
         }
 
         return inputStream;
+    }
+    public static String getJsonFromMessage(String message, String eHash)
+    {
+        JSONObject jsonObject=new JSONObject();
+        try {
+            jsonObject.put("message", message);
+            jsonObject.put("hash", eHash);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return  jsonObject.toString();
+    }
+    public static String getMessageFromJSON(JSONObject jsonObject)
+    {
+        try {
+          return  jsonObject.getString("message");
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return  "";
+    }
+    public static String getHashFromJSON(JSONObject jsonObject)
+    {
+        try {
+            return  jsonObject.getString("hash");
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return  "";
     }
 }

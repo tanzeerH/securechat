@@ -60,6 +60,7 @@ public class DeviceListAdapter extends BaseAdapter {
 		TextView tv_chat;
 		TextView tvStatus;
 		TextView tvConnect;
+		TextView tvClose;
 
 	}
 
@@ -75,6 +76,7 @@ public class DeviceListAdapter extends BaseAdapter {
 			holder.ivFlag=(ImageView)convertView.findViewById(R.id.iv_flag);
 			holder.tvStatus = (TextView)convertView.findViewById(R.id.tv_status);
 			holder.tvConnect = (TextView)convertView.findViewById(R.id.tv_connect);
+			holder.tvClose = (TextView) convertView.findViewById(R.id.tv_close);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -111,12 +113,20 @@ public class DeviceListAdapter extends BaseAdapter {
 		{
 			holder.tvConnect.setVisibility(View.GONE);
 			holder.tv_chat.setVisibility(View.VISIBLE);
+			holder.tvClose.setVisibility(View.VISIBLE);
 		}
 		else
 		{
 			holder.tvConnect.setVisibility(View.VISIBLE);
 			holder.tv_chat.setVisibility(View.GONE);
+			holder.tvClose.setVisibility(View.GONE);
 		}
+		holder.tvClose.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				disconnect();
+			}
+		});
 
 		//holder.ivFlag.setImageResource(p2pDevices.get(position).getIconId());
 
@@ -138,6 +148,23 @@ public class DeviceListAdapter extends BaseAdapter {
 				Toast.makeText(mContext, "Connect failed. Retry.",
 						Toast.LENGTH_SHORT).show();
 			}
+		});
+	}
+
+	public void disconnect() {
+
+		mManager.removeGroup(mChannel, new WifiP2pManager.ActionListener() {
+
+			@Override
+			public void onFailure(int reasonCode) {
+				Log.d("TAG", "Disconnect failed. Reason :" + reasonCode);
+			}
+
+			@Override
+			public void onSuccess() {
+				//fragment.getView().setVisibility(View.GONE);
+			}
+
 		});
 	}
 }

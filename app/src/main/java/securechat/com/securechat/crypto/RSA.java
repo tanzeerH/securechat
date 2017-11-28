@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.charset.Charset;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
@@ -320,6 +321,42 @@ public class RSA {
       }
       return  null;
   }
+    public static String decryptUsingOthersPublicKey(Context context,String message)
+    {
+        return message;
+        /*try {
+            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(new File(context.getFilesDir(), OTHER_KEY_FILE)));
+            final PublicKey publicKey = (PublicKey) inputStream.readObject();
+            final String cipherText = decryptUsingPublicKey(message.getBytes(Charset.forName("UTF-8")), publicKey);
+
+            Log.e(" cypher"," "+cipherText);
+            return  new String(cipherText);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }*/
+
+    }
+    public static String generateHashAndEncryptWithPrivateKey(Context context,String message)
+    {
+        try {
+            String hashValue=getMd5Hash(message);
+            ObjectInputStream   inputStream = new ObjectInputStream(new FileInputStream(new File(context.getFilesDir(),PRIVATE_KEY_FILE)));
+            final PrivateKey prKey = (PrivateKey) inputStream.readObject();
+            final byte[] ctext = encryptUsingPrivateKey(hashValue, prKey);
+
+
+
+            Log.e(" cypher"," "+new String(ctext));
+            return  ctext.toString();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return  null;
+    }
     public static String encryptUsingMyPrivateKey(Context context,byte[] message)
     {
         try {

@@ -8,6 +8,8 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -22,6 +24,7 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import securechat.com.securechat.MainActivity;
 import securechat.com.securechat.crypto.RSA;
 import securechat.com.securechat.database.DataHelper;
 import securechat.com.securechat.model.ClientClass;
@@ -94,14 +97,22 @@ public class AsyncClient extends AsyncTask<Void, Void, Void> {
                     dataInputStream.read(data,0,len);
                     //Log.e("message","read raw" +val);
                     String val= RSA.encryptUsingMyPrivateKey(mContext,data);
+                    JSONObject jsonObject=new JSONObject(val);
+                    val=CommonUtil.getMessageFromJSON(jsonObject);
+                    String hash=CommonUtil.getHashFromJSON(jsonObject);
+                    hash=RSA.decryptUsingOthersPublicKey(mContext,hash);
                     Message message = new Message(val, System.currentTimeMillis(),Message.FLAG_RECEIVED_MESSAGE, CommonUtil.getDeviceName());
                     DataHelper.getInstance(mContext).insertMessage(message);
-                    Log.e("message","read" +val);
+                    Log.e("message","read" +val+" hash: "+ hash);
                     //dataInputStream.close();
                 }
             } catch (IOException e) {
                 Log.e("TAG", e.getMessage());
-            } finally {
+            }
+            catch (Exception e) {
+                Log.e("TAG", e.getMessage());
+            }
+            finally {
 
 
             }

@@ -148,7 +148,10 @@ public class ChatActivity extends AppCompatActivity {
                 if (Constants.wifiP2pInfo.groupFormed && Constants.wifiP2pInfo.isGroupOwner) {
                     Log.e("message", "  insert: server");
                     try {
-                        byte [] data=RSA.encryptUsingOthersPublicKey(ChatActivity.this,myText);
+                        String eHash=RSA.generateHashAndEncryptWithPrivateKey(ChatActivity.this,myText);
+                        Log.e("mHash", eHash);
+                        String myMessage=CommonUtil.getJsonFromMessage(myText,eHash);
+                        byte [] data=RSA.encryptUsingOthersPublicKey(ChatActivity.this,myMessage);
                         ServerClass.getDataOutputStream().writeInt(data.length);
                         ServerClass.getDataOutputStream().write(data);
                     } catch (Exception e) {
@@ -158,7 +161,9 @@ public class ChatActivity extends AppCompatActivity {
                 else {
                     Log.e("message", "  insert: client");
                     try {
-                        byte [] data=RSA.encryptUsingOthersPublicKey(ChatActivity.this,myText);
+                        String eHash=RSA.generateHashAndEncryptWithPrivateKey(ChatActivity.this,myText);
+                        String myMessage=CommonUtil.getJsonFromMessage(myText,eHash);
+                        byte [] data=RSA.encryptUsingOthersPublicKey(ChatActivity.this,myMessage);
                         ClientClass.getDataOutputStream().writeInt(data.length);
                         ClientClass.getDataOutputStream().write(data);
                       //  ClientClass.getDataOutputStream().writeUTF(RSA.encryptUsingOthersPublicKey(ChatActivity.this,myText));

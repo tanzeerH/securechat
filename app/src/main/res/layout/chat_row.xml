@@ -14,6 +14,7 @@
             android:id="@+id/iv_sender"
             android:layout_width="60dp"
             android:layout_height="60dp"
+            android:background="@drawable/incoming"
             android:layout_alignParentLeft="true" />
 
         <RelativeLayout
@@ -44,6 +45,7 @@
             android:id="@+id/iv_me"
             android:layout_width="60dp"
             android:layout_height="60dp"
+            android:background="@drawable/outgoing"
             android:layout_alignParentRight="true" />
 
         <RelativeLayout

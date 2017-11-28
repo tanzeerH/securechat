@@ -75,6 +75,20 @@
             android:textSize="20sp"
 
             />
+        <TextView
+            android:id="@+id/tv_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="15dp"
+            android:layout_toRightOf="@+id/iv_flag"
+            android:layout_below="@id/tv_chat"
+            android:textColor="@android:color/holo_red_dark"
+            android:text="Tap To Close Connection"
+            android:textSize="20sp"
+
+            />
     </RelativeLayout>
 
 </RelativeLayout>
