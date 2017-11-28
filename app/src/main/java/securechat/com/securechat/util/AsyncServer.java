@@ -1,6 +1,7 @@
 package securechat.com.securechat.util;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -20,6 +21,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
 
+import securechat.com.securechat.MainActivity;
 import securechat.com.securechat.crypto.RSA;
 import securechat.com.securechat.database.DataHelper;
 import securechat.com.securechat.model.ClientClass;
@@ -37,56 +39,74 @@ public class AsyncServer extends AsyncTask<Void, Void, Void> {
     { mContext=c;
 
     }
+    private void sendIntentAction(String message)
+    {
+        Intent intent=new Intent();
+        intent.setAction(Constants.ACTION_NEW_STATUS);
+        intent.putExtra("status",message);
+        mContext.sendBroadcast(intent);
+    }
     @Override
     protected Void doInBackground(Void... params) {
-        try {
-            ServerSocket serverSocket = new ServerSocket(Constants.port_number);
-            Log.e("TAG","sever connection: waiting" );
+        while(MainActivity.isAlive) {
+            try {
+                ServerSocket serverSocket = new ServerSocket(Constants.port_number);
+                Log.e("TAG", "sever connection: waiting");
+                sendIntentAction("server: waiting for connection");
 
-            Socket client = serverSocket.accept();
-            ServerClass.setUp(serverSocket,client);
+                Socket client = serverSocket.accept();
+                ServerClass.setUp(serverSocket, client);
 
-            Log.e("TAG"," sending server public file");
-            byte[] data = getBytesFromFile(RSA.PUBLIC_KEY_FILE);
-            Log.e("TAG"," sending length: "+ data.length);
-            ServerClass.getDataOutputStream().writeInt(data.length);
-            ServerClass.getDataOutputStream().write(data);
+                Log.e("TAG", " sending server public file");
+                sendIntentAction("server: sending public file");
+                byte[] data = getBytesFromFile(RSA.PUBLIC_KEY_FILE);
+                Log.e("TAG", " sending length: " + data.length);
+                ServerClass.getDataOutputStream().writeInt(data.length);
+                ServerClass.getDataOutputStream().write(data);
            /* Log.e("TAG"," sending my public file");
             sendMyPublicKeyFile(ServerClass.getSocket().getOutputStream());
             Log.e("TAG"," receiving clients public file");
             receiveClientsPublicFile(ServerClass.getSocket().getInputStream());
             Log.e("TAG"," done with copy");*/
+                sendIntentAction("server: receiving public file");
+                DataInputStream dataInputStream = new DataInputStream(ServerClass.getSocket().getInputStream());
+                int len = dataInputStream.readInt();
+                Log.e("TAG", "len: " + len);
+                data = new byte[len];
+                dataInputStream.read(data, 0, len);
+                Log.e("TAG", " read " + len + " bytes");
+                saveKeyToFile(data);
+                while (true) {
+                    sendIntentAction("server: waiting for message");
+                    Log.e("message", "server: waiting");
 
-            DataInputStream dataInputStream =  new DataInputStream(ServerClass.getSocket().getInputStream());
-            int len= dataInputStream.readInt();
-            Log.e("TAG","len: "+ len );
-             data=new byte[len];
-            dataInputStream.read(data,0,len);
-            Log.e("TAG"," read "+ len +" bytes");
-            saveKeyToFile(data);
-           while(true ) {
-               Log.e("message","server: waiting" );
 
+                    //   byte[] packetData = new byte[ServerClass.getDataInputStream().readInt()];
+                    len = dataInputStream.readInt();
+                    Log.e("TAG", "len: " + len);
+                    if (len == -1) {
+                        ServerClass.getSocket().close();
+                        ServerClass.makeNull();
+                       // sendIntentAction("server: connection closed");
+                        break;
+                    } else {
 
-            //   byte[] packetData = new byte[ServerClass.getDataInputStream().readInt()];
-               len= dataInputStream.readInt();
-               Log.e("TAG","len: "+ len );
-               data=new byte[len];
-               dataInputStream.read(data,0,len);
-               //Log.e("message","read raw" +val);
-               String val= RSA.encryptUsingMyPrivateKey(mContext,data);
-               Log.e("message","read" +val);
-               Message message = new Message(val, System.currentTimeMillis(),Message.FLAG_RECEIVED_MESSAGE, CommonUtil.getDeviceName());
-               DataHelper.getInstance(mContext).insertMessage(message);
-              //dataInputStream.close();
-           }
+                        data = new byte[len];
+                        dataInputStream.read(data, 0, len);
+                        //Log.e("message","read raw" +val);
+                        String val = RSA.encryptUsingMyPrivateKey(mContext, data);
+                        Log.e("message", "read" + val);
+                        Message message = new Message(val, System.currentTimeMillis(), Message.FLAG_RECEIVED_MESSAGE, CommonUtil.getDeviceName());
+                        DataHelper.getInstance(mContext).insertMessage(message);
+                    }
+                    //dataInputStream.close();
+                }
             /*InputStream inputstream = client.getInputStream();
             String read= readInputStream(inputstream);
             Log.e("message"," read: "+ read);*/
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }
@@ -140,6 +160,7 @@ public class AsyncServer extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
+        Log.e("message", "post execue");
        // Toast.makeText(getA)
     }
     private byte[] getBytesFromFile(String filename)

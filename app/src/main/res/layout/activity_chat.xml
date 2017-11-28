@@ -21,12 +21,21 @@
             android:maxLines="6"
             android:layout_alignParentBottom="true"
             android:layout_toLeftOf="@+id/iv_send"/>
+    <TextView
+        android:id="@+id/tv_status"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:gravity="center"
+        android:textColor="@android:color/holo_red_dark"
+        android:layout_alignParentTop="true"
+        android:text="status"/>
 
     <ListView
         android:id="@+id/lv_message"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:stackFromBottom="true"
+        android:layout_below="@+id/tv_status"
         android:layout_above="@+id/et_text"></ListView>
 
 </RelativeLayout>

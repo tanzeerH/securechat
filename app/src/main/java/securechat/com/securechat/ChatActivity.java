@@ -12,11 +12,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 
@@ -41,6 +44,7 @@ public class ChatActivity extends AppCompatActivity {
     private DataHelper dataHelper;
     private MessageCursorAdapter messageCursorAdapter;
     private ListView lvMessage;
+    private TextView tvStatus;
     BroadcastReceiver onNewMessageListner=new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -51,6 +55,22 @@ public class ChatActivity extends AppCompatActivity {
             //finish();
         }
     };
+    BroadcastReceiver onNewStatusListner=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+
+            Log.e("message", " status received");
+            String msessage=intent.getStringExtra("status");
+            Constants.RECENT_STATUS=msessage;
+            tvStatus.setText(msessage);
+            if(msessage.equals("server: connection closed"))
+                finish();
+          //  setAdapter();
+            //finish();
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,19 +86,28 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
        lvMessage = (ListView)findViewById(R.id.lv_message);
-       setAdapter();
+        tvStatus=(TextView)findViewById(R.id.tv_status);
+
+        setAdapter();
         createClinet();
         setIntentFilter();
 
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        tvStatus.setText(Constants.RECENT_STATUS);
+    }
 
     private void setIntentFilter()
     {
         IntentFilter intentFilter=new IntentFilter(Constants.ACTION_NEW_MESSAGE);
-
         registerReceiver(onNewMessageListner,intentFilter);
+
+        intentFilter=new IntentFilter(Constants.ACTION_NEW_STATUS);
+        registerReceiver(onNewStatusListner,intentFilter);
 
     }
     private  void setAdapter()
@@ -153,9 +182,11 @@ public class ChatActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(onNewMessageListner);
+        unregisterReceiver(onNewStatusListner);
         if(ClientClass.getDataOutputStream() != null)
         {
             try {
+                ClientClass.getDataOutputStream().writeInt(-1);
                 ClientClass.getSocket().close();
                 ClientClass.makeNull();
             }

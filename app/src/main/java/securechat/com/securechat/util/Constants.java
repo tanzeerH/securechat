@@ -14,5 +14,7 @@ public class Constants {
     public static WifiP2pInfo wifiP2pInfo = null;
     public static int port_number = 8888;
     public static String ACTION_NEW_MESSAGE = "intent.action.newmessge";
+    public static String ACTION_NEW_STATUS = "intent.action.newstatus";
+    public static String RECENT_STATUS="";
     public static final String FILE_EXTENSION_PATH= "SecureChat"+ File.separator+"extension"+File.separator;
 }

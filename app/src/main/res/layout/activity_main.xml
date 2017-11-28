@@ -13,9 +13,18 @@
     android:textStyle="bold"
     android:text="scan"
     />
+    <TextView
+        android:id="@+id/tv_status"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:gravity="center"
+        android:textColor="@android:color/holo_red_dark"
+        android:layout_alignParentTop="true"
+        android:text="status"/>
     <ListView
         android:id="@+id/lv_devices"
         android:layout_above="@id/btn"
+        android:layout_below="@+id/tv_status"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></ListView>
 

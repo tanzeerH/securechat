@@ -42,11 +42,18 @@ public class MessageCursorAdapter extends CursorAdapter {
         else{
             rlSend.setVisibility(View.GONE);
             rlReceived.setVisibility(View.VISIBLE);
+            setUpIncomingMesageUI(view,cursor);
         }
     }
     private  void setUpOutgoingMesageUI(View view, Cursor cursor)
     {
         TextView tv= (TextView) view.findViewById(R.id.tv_message_send);
+        String message =  cursor.getString( cursor.getColumnIndex( DataBaseOpenHelper.KEY_MESSAGE_BODY ) );
+        tv.setText(message);
+    }
+    private  void setUpIncomingMesageUI(View view, Cursor cursor)
+    {
+        TextView tv= (TextView) view.findViewById(R.id.tv_message_received);
         String message =  cursor.getString( cursor.getColumnIndex( DataBaseOpenHelper.KEY_MESSAGE_BODY ) );
         tv.setText(message);
     }

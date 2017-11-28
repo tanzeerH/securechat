@@ -13,8 +13,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -27,6 +29,7 @@ import securechat.com.securechat.model.ServerClass;
 import securechat.com.securechat.util.AsyncServer;
 import securechat.com.securechat.util.AsyncClient;
 import securechat.com.securechat.util.Constants;
+import securechat.com.securechat.util.ServerThread;
 
 public class MainActivity extends AppCompatActivity implements WifiP2pManager.ConnectionInfoListener,WifiP2pManager.PeerListListener {
 
@@ -36,24 +39,29 @@ public class MainActivity extends AppCompatActivity implements WifiP2pManager.Co
     IntentFilter mIntentFilter;
     private ListView lvDevices;
     private DeviceListAdapter deviceListAdapter;
+    private TextView tvStatus;
     private ArrayList<WifiP2pDevice> wifiP2pDevices=new ArrayList<>();
+    public static boolean isAlive=true;
+    BroadcastReceiver onNewStatusListner=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+
+            String msessage=intent.getStringExtra("status");
+            Constants.RECENT_STATUS=msessage;
+            tvStatus.setText(msessage);
+            //  setAdapter();
+            //finish();
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         lvDevices=(ListView) findViewById(R.id.lv_devices);
-        Button btn=(Button)findViewById(R.id.btn);
-        initKeysForEncryption();
-        initialize();
 
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mManager != null) {
-                    mManager.requestPeers(mChannel,MainActivity.this);
-                }
-            }
-        });
+        tvStatus=(TextView)findViewById(R.id.tv_status);
+
 
 
         //just sample code
@@ -106,6 +114,20 @@ public class MainActivity extends AppCompatActivity implements WifiP2pManager.Co
     @Override
     protected void onResume() {
         super.onResume();
+        IntentFilter  intentFilter=new IntentFilter(Constants.ACTION_NEW_STATUS);
+        registerReceiver(onNewStatusListner,intentFilter);
+        initKeysForEncryption();
+        initialize();
+        Button btn=(Button)findViewById(R.id.btn);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mManager != null) {
+                    mManager.requestPeers(mChannel,MainActivity.this);
+                }
+            }
+        });
+        tvStatus.setText(Constants.RECENT_STATUS);
        registerReceiver(mReceiver, mIntentFilter);
     }
     /* unregister the broadcast receiver */
@@ -122,11 +144,14 @@ public class MainActivity extends AppCompatActivity implements WifiP2pManager.Co
         Toast.makeText(MainActivity.this," in "+ info.groupOwnerAddress +"  "+ info.isGroupOwner +"  ", Toast.LENGTH_SHORT).show();
         if (info.groupFormed && info.isGroupOwner) {
 
+            tvStatus.setText("server: creating");
+           // new ServerThread(MainActivity.this).run();
                 new AsyncServer(MainActivity.this).execute();
 
         }
         else if( info.groupFormed)
         {
+            tvStatus.setText("Client");
            /* final Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
@@ -160,6 +185,8 @@ public class MainActivity extends AppCompatActivity implements WifiP2pManager.Co
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        isAlive=false;
+        unregisterReceiver(onNewStatusListner);
         if(ClientClass.getDataOutputStream() != null)
         {
             try {

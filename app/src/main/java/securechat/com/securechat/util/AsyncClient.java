@@ -2,6 +2,7 @@ package securechat.com.securechat.util;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -38,7 +39,13 @@ public class AsyncClient extends AsyncTask<Void, Void, Void> {
     {
         mContext=c;
     }
-
+    private void sendIntentAction(String message)
+    {
+        Intent intent=new Intent();
+        intent.setAction(Constants.ACTION_NEW_STATUS);
+        intent.putExtra("status",message);
+        mContext.sendBroadcast(intent);
+    }
     @Override
     protected Void doInBackground(Void... params) {
 
@@ -50,10 +57,14 @@ public class AsyncClient extends AsyncTask<Void, Void, Void> {
             try {
                 //Log.d(WiFiDirectActivity.TAG, "Opening client socket - ");
                 socket.bind(null);
+                sendIntentAction("client: trying to connect");
+
                 socket.connect((new InetSocketAddress(Constants.wifiP2pInfo.groupOwnerAddress, Constants.port_number)), 2000);
                 Log.e("message","is Connected: "+socket.isConnected() );
+                sendIntentAction("client: connected");
                 ClientClass.setUp(socket);
                 Log.e("TAG","reading int " );
+                sendIntentAction("client: receiving public file");
                 DataInputStream dataInputStream =  new DataInputStream(ClientClass.getSocket().getInputStream());
                 int len= dataInputStream.readInt();
                 Log.e("TAG","len: "+ len );
@@ -63,6 +74,7 @@ public class AsyncClient extends AsyncTask<Void, Void, Void> {
                 saveKeyToFile(data);
                  data = getBytesFromFile(RSA.PUBLIC_KEY_FILE);
                 Log.e("TAG"," sending length: "+ data.length);
+                sendIntentAction("client: sending public file");
                 DataOutputStream dataOutputStream =  new DataOutputStream(ClientClass.getSocket().getOutputStream());
                 dataOutputStream.writeInt(data.length);
                 dataOutputStream.write(data);
@@ -73,7 +85,7 @@ public class AsyncClient extends AsyncTask<Void, Void, Void> {
                 Log.e("TAG"," done with copy");*/
                 while(true ) {
                     Log.e("message","client: waiting" );
-
+                    sendIntentAction("client: waiting for message");
                     //   byte[] packetData = new byte[ServerClass.getDataInputStream().readInt()];
                    // String val= dataInputStream.readUTF();
                      len= dataInputStream.readInt();
